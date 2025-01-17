@@ -1,0 +1,53 @@
+# azure-pipelines.yml
+
+trigger:
+  batch: true
+  branches:
+    include:
+      # Specify the branches to monitor
+      - main
+      - feature/*
+      - bugfix/*
+  paths:
+    include:
+      # Only trigger pipeline for changes in these directories
+      - inference/
+      - preprocessing/
+      - training/
+
+stages:
+  - stage: Validator
+    displayName: Validate Build Prerequisites
+    jobs:
+      - job: validate_files_and_directories
+        displayName: Validate Required Files and Directories
+        pool:
+          vmImage: 'ubuntu-latest' # Define the build agent
+        steps:
+          - checkout: self
+          - script: |
+              # Define lists of required directories
+              REQUIRED_DIRS=(
+                "inference"
+                "preprocessing"
+                "training"
+                "helm"
+              )
+
+              # Function to check for directories
+              check_directories() {
+                echo "Validating required directories..."
+                for dir in "${REQUIRED_DIRS[@]}"; do
+                  if [ ! -d "$dir" ]; then
+                    echo "Error: Required directory '$dir' is missing!" && exit 1
+                  else
+                    echo "Directory '$dir' is present."
+                  fi
+                done
+              }
+
+              # Run validations
+              check_directories
+
+              echo "Validation successful: All required directories are present."
+            displayName: Validate Directories
