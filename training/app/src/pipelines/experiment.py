@@ -103,7 +103,7 @@ def update_model_alias(client, model_name, new_alias, version, old_alias=None):
 
 def calculate_rmse(predictions, true_values):
     """
-    Calculate the Root Mean Squared Error (RMSE) between predictions and true values.
+    Calculate the Root Mean Squared Error (RMSE) between predictions and true values..
 
     Args:
         predictions (array-like): Predicted values.
