@@ -25,7 +25,7 @@ def preprocess_input(data):
 
         processed_data = response.json().get("processed_data")
         if processed_data is None:
-            raise ValueError("Processed data not found in the response.")
+            raise ValueError("Processed data not found in the response..")
         return processed_data
 
     except requests.RequestException as e:
