@@ -36,7 +36,7 @@ def preprocess(data: BatchInput):
     except Exception as e:
         # Log the error and raise an HTTP exception
         print(f"Error occurred: {e}")
-        raise HTTPException(status_code=500, detail="Error while preprocessing the data")
+        raise HTTPException(status_code=500, detail="Error while preprocessing the data.")
 
 
 # Define an endpoint for real-time preprocessing

@@ -1,19 +1,31 @@
-# azure-pipelines.yml
-
 trigger:
   batch: true
   branches:
     include:
-      # Specify the branches to monitor
       - main
       - feature/*
       - bugfix/*
+  # Disable automatic path-based trigger as this will be parameterized
   paths:
     include:
-      # Only trigger pipeline for changes in these directories
-      - inference/
-      - preprocessing/
-      - training/
+      - inference
+
+pool:
+  vmImage: 'ubuntu-latest' # Define the build agent
+
+# Define a parameter for directory path
+parameters:
+  - name: directoryPath
+    displayName: Directory Path
+    type: string
+    default: "inference"  # Default value if none is provided
+
+# Define a parameter for directory path
+parameters:
+  - name: directoryPath
+    displayName: Directory Path
+    type: string
+    default: "inference"  # Default value if none is provided
 
 stages:
   - stage: Validator
@@ -21,33 +33,20 @@ stages:
     jobs:
       - job: validate_files_and_directories
         displayName: Validate Required Files and Directories
-        pool:
-          vmImage: 'ubuntu-latest' # Define the build agent
         steps:
           - checkout: self
           - script: |
-              # Define lists of required directories
-              REQUIRED_DIRS=(
-                "inference"
-                "preprocessing"
-                "training"
-                "helm"
-              )
+              # Parameterized directory path
+              DIR_PATH="${{ parameters.directoryPath }}"
 
-              # Function to check for directories
-              check_directories() {
-                echo "Validating required directories..."
-                for dir in "${REQUIRED_DIRS[@]}"; do
-                  if [ ! -d "$dir" ]; then
-                    echo "Error: Required directory '$dir' is missing!" && exit 1
-                  else
-                    echo "Directory '$dir' is present."
-                  fi
-                done
-              }
+              echo "Validating directory: $DIR_PATH"
 
-              # Run validations
-              check_directories
+              # Check if the directory exists
+              if [ ! -d "$DIR_PATH" ]; then
+                echo "Error: Directory '$DIR_PATH' is missing!" && exit 1
+              else
+                echo "Directory '$DIR_PATH' is present."
+              fi
 
-              echo "Validation successful: All required directories are present."
-            displayName: Validate Directories
+              echo "Validation successful: Directory '$DIR_PATH' is present."
+            displayName: Validate Parameterized Directory
