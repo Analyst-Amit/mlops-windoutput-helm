@@ -1,0 +1,31 @@
+replicaCount: 3
+
+image:
+  repository: amitgupta2533/preprocessing-service
+  tag: v0.0.1
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 8001
+  targetPort: 8001
+
+resources:
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+
+probes:
+  liveness:
+    path: /health
+    port: 8001
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    path: /ready
+    port: 8001
+    initialDelaySeconds: 30
+    periodSeconds: 10

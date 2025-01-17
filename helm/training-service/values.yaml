@@ -1,0 +1,22 @@
+job:
+  name: training-job
+  labels:
+    app: training-job
+container:
+  name: training-service
+  image: amitgupta2533/training-service:v0.0.1
+  imagePullPolicy: Always
+  port: 8080
+  portName: http
+env:
+  awsSecretName: aws-credentials-dev1
+  awsRegion: us-east-1
+  mlflowTrackingUri: http://130.211.120.30:5000
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 500m
+  limits:
+    memory: 1Gi
+    cpu: 1
+restartPolicy: Never
