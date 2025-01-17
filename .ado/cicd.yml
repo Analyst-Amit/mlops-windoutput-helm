@@ -20,13 +20,6 @@ parameters:
     type: string
     default: "inference"  # Default value if none is provided
 
-# Define a parameter for directory path
-parameters:
-  - name: directoryPath
-    displayName: Directory Path
-    type: string
-    default: "inference"  # Default value if none is provided
-
 stages:
   - stage: Validator
     displayName: Validate Build Prerequisites
