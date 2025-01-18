@@ -56,13 +56,15 @@ stages:
           - checkout: self
           - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
             displayName: Print DOCKER_USERNAME
+          - script: ls -la ${{ parameters.directoryPath }}
+            displayName: List Files in the Directory
           - task: Docker@2
             displayName: Build and Push Docker Image
             inputs:
               containerRegistry: docker-hub-connection
               repository: $(DOCKER_USERNAME)/preprocessing
               command: buildAndPush
-              Dockerfile: ${{ parameters.directoryPath }}
+              Dockerfile: ${{ parameters.directoryPath }}/Dockerfile
               tags: |
                 latest
                 $(Build.SourceBranchName)
