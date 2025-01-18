@@ -15,7 +15,6 @@ pool:
 
 variables:
   - group: DockerCredentials
-  - group: github-cicd
 
 
 # Define a parameter for directory path
@@ -100,10 +99,8 @@ stages:
               echo "Adding and committing the file..."
               git checkout main
               git add index.html
-              git commit -m "Add index.html file"
+              git commit -m "Add index1.html file"
 
               echo "Pushing changes to the main branch..."
               git push --set-upstream origin main
             displayName: Create, Commit, and Push index.html
-            env:
-              GITHUB_TOKEN: $(GITHUB_TOKEN)
