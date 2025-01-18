@@ -84,5 +84,22 @@ stages:
           - checkout: HelmCharts
           - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
             displayName: Print DOCKER_USERNAME
-          - script: ls -la ${{ parameters.directoryPath }}-service
+          - script: ls -la
             displayName: List Files in the Directory
+          - script: |
+              echo "Creating index.html file..."
+              echo "<!DOCTYPE html>" > index.html
+              echo "<html>" >> index.html
+              echo "<head><title>Welcome</title></head>" >> index.html
+              echo "<body><h1>Welcome to My Repo!</h1></body>" >> index.html
+              echo "</html>" >> index.html
+
+              echo "Adding and committing the file..."
+              git add index.html
+              git config user.name "Azure DevOps Pipeline"
+              git config user.email "pipeline@azuredevops.com"
+              git commit -m "Add index.html file"
+
+              echo "Pushing changes to the main branch..."
+              git push origin main
+            displayName: Create, Commit, and Push index.html
