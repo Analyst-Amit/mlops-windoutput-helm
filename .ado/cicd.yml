@@ -95,6 +95,7 @@ stages:
               echo "</html>" >> index.html
 
               echo "Adding and committing the file..."
+              git checkout main
               git add index.html
               git config user.name "Azure DevOps Pipeline"
               git config user.email "pipeline@azuredevops.com"
