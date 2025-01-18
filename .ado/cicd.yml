@@ -93,11 +93,11 @@ stages:
               echo "<head><title>Welcome</title></head>" >> index.html
               echo "<body><h1>Welcome to My Repo!</h1></body>" >> index.html
               echo "</html>" >> index.html
-              export GITHUB_TOKEN="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"
+              export my_token="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"
               echo "Adding and committing the file..."
               git checkout main
               git add index.html
-              git config --global url."https://$GITHUB_TOKEN@github.com".insteadOf "https://github.com"
+              git config --global url."https://$my_token@github.com".insteadOf "https://github.com"
               git config user.name "Azure DevOps Pipeline"
               git config user.email "pipeline@azuredevops.com"
               git commit -m "Add index.html file"
