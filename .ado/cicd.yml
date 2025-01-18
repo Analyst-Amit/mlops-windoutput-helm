@@ -23,6 +23,13 @@ parameters:
     type: string
     default: "preprocessing"  # Default value if none is provided
 
+resources:
+  repositories:
+  - repository: HelmCharts # The name used to reference this repository in the checkout step
+    type: github
+    endpoint: ado-terraform-token
+    name: Analyst-Amit/helm-charts
+
 stages:
   # - stage: Validator
   #   displayName: Validate Build Prerequisites
@@ -47,24 +54,35 @@ stages:
   #             echo "Validation successful: Directory '$DIR_PATH' is present."
   #           displayName: Validate Parameterized Directory
 
-  - stage: push_pre_processing_image
-    displayName: Deploy to Production
+  # - stage: push_pre_processing_image
+  #   displayName: Deploy to Production
+  #   jobs:
+  #     - job: docker_build_and_push_prod
+  #       displayName: Build Docker Image and Push to Docker Hub
+  #       steps:
+  #         - checkout: self
+  #         - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
+  #           displayName: Print DOCKER_USERNAME
+  #         - script: ls -la ${{ parameters.directoryPath }}
+  #           displayName: List Files in the Directory
+  #         - task: Docker@2
+  #           displayName: Build and Push Docker Image
+  #           inputs:
+  #             containerRegistry: docker-hub-connection
+  #             repository: $(DOCKER_USERNAME)/preprocessing
+  #             command: buildAndPush
+  #             Dockerfile: ${{ parameters.directoryPath }}/Dockerfile
+  #             tags: |
+  #               latest
+  #               $(Build.SourceBranchName)
+  - stage: PushFileToAnotherRepo
+    displayName: Push File to Another GitHub Repository
     jobs:
-      - job: docker_build_and_push_prod
-        displayName: Build Docker Image and Push to Docker Hub
+      - job: push_file
+        displayName: Push File Job
         steps:
-          - checkout: self
+          - checkout: HelmCharts
           - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
             displayName: Print DOCKER_USERNAME
-          - script: ls -la ${{ parameters.directoryPath }}
+          - script: ls -la ${{ parameters.directoryPath }}-service
             displayName: List Files in the Directory
-          - task: Docker@2
-            displayName: Build and Push Docker Image
-            inputs:
-              containerRegistry: docker-hub-connection
-              repository: $(DOCKER_USERNAME)/preprocessing
-              command: buildAndPush
-              Dockerfile: ${{ parameters.directoryPath }}/Dockerfile
-              tags: |
-                latest
-                $(Build.SourceBranchName)
