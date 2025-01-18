@@ -8,38 +8,61 @@ trigger:
   # Disable automatic path-based trigger as this will be parameterized
   paths:
     include:
-      - inference
+      - preprocessing
 
 pool:
   vmImage: 'ubuntu-latest' # Define the build agent
+
+variables:
+  - group: DockerCredentials
 
 # Define a parameter for directory path
 parameters:
   - name: directoryPath
     displayName: Directory Path
     type: string
-    default: "inference"  # Default value if none is provided
+    default: "preprocessing"  # Default value if none is provided
 
 stages:
-  - stage: Validator
-    displayName: Validate Build Prerequisites
+  # - stage: Validator
+  #   displayName: Validate Build Prerequisites
+  #   jobs:
+  #     - job: validate_files_and_directories
+  #       displayName: Validate Required Files and Directories
+  #       steps:
+  #         - checkout: self
+  #         - script: |
+  #             # Parameterized directory path
+  #             DIR_PATH="${{ parameters.directoryPath }}"
+
+  #             echo "Validating directory: $DIR_PATH"
+
+  #             # Check if the directory exists
+  #             if [ ! -d "$DIR_PATH" ]; then
+  #               echo "Error: Directory '$DIR_PATH' is missing!" && exit 1
+  #             else
+  #               echo "Directory '$DIR_PATH' is present."
+  #             fi
+
+  #             echo "Validation successful: Directory '$DIR_PATH' is present."
+  #           displayName: Validate Parameterized Directory
+
+  - stage: Push Preprocessing image
+    displayName: Deploy to Production
     jobs:
-      - job: validate_files_and_directories
-        displayName: Validate Required Files and Directories
+      - job: docker_build_and_push_prod
+        displayName: Build Docker Image and Push to Docker Hub
         steps:
           - checkout: self
-          - script: |
-              # Parameterized directory path
-              DIR_PATH="${{ parameters.directoryPath }}"
-
-              echo "Validating directory: $DIR_PATH"
-
-              # Check if the directory exists
-              if [ ! -d "$DIR_PATH" ]; then
-                echo "Error: Directory '$DIR_PATH' is missing!" && exit 1
-              else
-                echo "Directory '$DIR_PATH' is present."
-              fi
-
-              echo "Validation successful: Directory '$DIR_PATH' is present."
-            displayName: Validate Parameterized Directory
+          - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
+            displayName: Print DOCKER_USERNAME
+          - task: Docker@2
+            displayName: Build and Push Docker Image
+            inputs:
+              containerRegistry: docker-hub-connection
+              repository: $(DOCKER_USERNAME)/preprocessing
+              command: buildAndPush
+              Dockerfile: ${{ parameters.directoryPath }}
+              tags: |
+                latest
+                $(Build.SourceBranchName)
