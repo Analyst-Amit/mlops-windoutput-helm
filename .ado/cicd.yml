@@ -93,7 +93,7 @@ stages:
               echo "<head><title>Welcome</title></head>" >> index.html
               echo "<body><h1>Welcome to My Repo!</h1></body>" >> index.html
               echo "</html>" >> index.html
-              export my_token="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"
+              export my_token="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"
               echo "Adding and committing the file..."
               git checkout main
               git add index.html
