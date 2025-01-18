@@ -90,15 +90,15 @@ stages:
             displayName: List Files in the Directory
           - script: |
               git config --global user.email pipeline@demo.com & git config --global user.name "Pipeline"
-              echo "Creating index.html file..."
-              echo "<!DOCTYPE html>" > index.html
-              echo "<html>" >> index.html
-              echo "<head><title>Welcome</title></head>" >> index.html
-              echo "<body><h1>Welcome to My Repo!</h1></body>" >> index.html
-              echo "</html>" >> index.html
+              echo "Creating index1.html file..."
+              echo "<!DOCTYPE html>" > index1.html
+              echo "<html>" >> index1.html
+              echo "<head><title>Welcome</title></head>" >> index1.html
+              echo "<body><h1>Welcome to My Repo!</h1></body>" >> index1.html
+              echo "</html>" >> index1.html
               echo "Adding and committing the file..."
               git checkout main
-              git add index.html
+              git add index1.html
               git commit -m "Add index1.html file"
 
               echo "Pushing changes to the main branch..."
