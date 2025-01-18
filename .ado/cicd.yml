@@ -47,7 +47,7 @@ stages:
   #             echo "Validation successful: Directory '$DIR_PATH' is present."
   #           displayName: Validate Parameterized Directory
 
-  - stage: Push Preprocessing image
+  - stage: push_pre_processing_image
     displayName: Deploy to Production
     jobs:
       - job: docker_build_and_push_prod
