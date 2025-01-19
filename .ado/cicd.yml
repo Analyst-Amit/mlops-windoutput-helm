@@ -86,15 +86,19 @@ stages:
             persistCredentials: true
           - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
             displayName: Print DOCKER_USERNAME
-          - script: ls -la
-            displayName: List Files in the Directory
-          - script: |
-              git config --global user.email pipeline@demo.com & git config --global user.name "Pipeline"
-              echo "Adding and committing the file..."
-              git checkout -b main
-              echo 'This is a test' > data.txt
-              git add -A
-              git commit -m "Add data.txt file"
-              echo "Pushing changes to the main branch..."
-              git push -u origin main
-            displayName: Create, Commit, and Push
+          - checkout: self
+            displayName: Checking out complete Repo
+          - script: ls -la 
+            displayName: List Files in the Whole directory
+          - script: ls -la preprocessing-service
+            displayName: List file in just the preprocessing-service
+          # - script: |
+          #     git config --global user.email pipeline@demo.com & git config --global user.name "Pipeline"
+          #     echo "Adding and committing the file..."
+          #     git checkout -b main
+          #     echo 'This is a test' > data.txt
+          #     git add -A
+          #     git commit -m "Add data.txt file"
+          #     echo "Pushing changes to the main branch..."
+          #     git push -u origin main
+          #   displayName: Create, Commit, and Push
