@@ -90,7 +90,7 @@ stages:
             displayName: Checking out complete Repo
           - script: ls -la 
             displayName: List Files in the Whole directory
-          - script: ls -la mlops-windoutput-helm/preprocessing-service
+          - script: ls -la mlops-windoutput-helm/helm
             displayName: List file in just the preprocessing-service
           # - script: |
           #     git config --global user.email pipeline@demo.com & git config --global user.name "Pipeline"
