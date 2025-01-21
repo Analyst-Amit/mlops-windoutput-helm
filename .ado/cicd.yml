@@ -114,23 +114,18 @@ stages:
               ls -la mlops-windoutput-helm/helm/packages
               echo "Contents of 'helm' directory:"
               ls -la mlops-windoutput-helm/helm
+              ls -la
+              echo "Contents of main directory"
             displayName: "List Packaged Files"
 
 
           # - script: |
+          #     cd 
           #     git config --global user.email pipeline@demo.com & git config --global user.name "Pipeline"
-          #     echo "Adding and committing the file..."
           #     git checkout -b main
-          #     echo 'This is a test' > data.txt
+              
           #     git add -A
           #     git commit -m "Add data.txt file"
           #     echo "Pushing changes to the main branch..."
           #     git push -u origin main
           #   displayName: Create, Commit, and Push
-          - script: |
-              yq eval '.version = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
-              yq eval '.appVersion = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
-              echo "Updated version fields in Chart.yaml"
-
-          - script: cat mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
-            displayName: Print Chart.yaml to Verify Updates
