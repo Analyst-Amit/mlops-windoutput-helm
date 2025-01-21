@@ -130,11 +130,13 @@ stages:
               downloadType: 'specific'
               artifactName: 'helm-chart-artifact'
               downloadPath: '$(Pipeline.Workspace)/helm-chart'
+          
+          - task: HelmInstaller@1
+            displayName: Helm installer
+            inputs: 
+              helmVersionToInstall: 3.16.3
 
           - script: |
-              echo "Listing the files in $(Pipeline.Workspace)/helm-chart"
-              # ls -R $(Pipeline.Workspace)/helm-chart/helm-chart-artifact  # List all files in the directory to debug the artifact location
-
               cd helm-charts
               git status
               git config --global user.email pipeline@demo.com
@@ -151,7 +153,7 @@ stages:
                   echo "File ${{ parameters.directoryPath }}-service-${{ parameters.version }}.tgz not found in artifact"
                   exit 1
               fi
-              
+              helm repo index ${{ parameters.directoryPath }} --url https://analyst-amit.github.io/helm-charts/${{ parameters.directoryPath }}
               git add -A
               git commit -m "Added latest ${{ parameters.directoryPath }} file"
               git push -u origin main
