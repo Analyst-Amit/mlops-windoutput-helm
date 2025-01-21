@@ -23,6 +23,10 @@ parameters:
     displayName: Directory Path
     type: string
     default: "preprocessing"  # Default value if none is provided
+  - name: version
+    displayName: Update Version to
+    type: string
+    default: "1.0.0"  # Default value if none is provided
 
 resources:
   repositories:
@@ -93,8 +97,8 @@ stages:
           - script: ls -la mlops-windoutput-helm/helm
             displayName: List file in just the preprocessing-service
           - script: |
-              yq eval '.version = "3.0.0"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
-              yq eval '.appVersion = "3.0.0"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
+              yq eval '.version = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
+              yq eval '.appVersion = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
               echo "Updated version fields in Chart.yaml"
 
           - script: cat mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
