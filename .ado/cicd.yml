@@ -154,28 +154,35 @@ stages:
             persistCredentials: true
           - checkout: self
             displayName: Checking out complete Repo
+            
           - task: DownloadBuildArtifacts@0
             inputs:
               buildType: 'current'
               downloadType: 'specific'
               artifactName: 'helm-chart-artifact'
               downloadPath: '$(Pipeline.Workspace)/helm-chart'
+
           - script: |
+              echo "Listing the files in $(Pipeline.Workspace)/helm-chart"
+              ls -R $(Pipeline.Workspace)/helm-chart  # List all files in the directory to debug the artifact location
+
               cd helm-charts
               git status
               git config --global user.email pipeline@demo.com
               git config --global user.name "Pipeline"
               git checkout main || git checkout -b main
+              
               # Check if the artifact file exists
-              if [ -f $(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz ]; then
+              if [ -f "$(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz" ]; then
                   echo "File found. Copying to the target directory..."
                   mkdir -p preprocessing  # Create the 'preprocessing' directory
-                  cp $(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz preprocessing/
+                  cp "$(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz" preprocessing/
                   echo "File successfully copied"
               else
                   echo "File preprocessing-service-3.0.1.tgz not found in artifact"
                   exit 1
               fi
+              
               git add -A
               git commit -m "Add latest preprocessing file"
               git push -u origin main
