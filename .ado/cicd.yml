@@ -119,13 +119,27 @@ stages:
             displayName: "List Packaged Files"
 
 
-          # - script: |
-          #     cd 
-          #     git config --global user.email pipeline@demo.com & git config --global user.name "Pipeline"
-          #     git checkout -b main
-              
-          #     git add -A
-          #     git commit -m "Add data.txt file"
-          #     echo "Pushing changes to the main branch..."
-          #     git push -u origin main
-          #   displayName: Create, Commit, and Push
+          - script: |
+              cd helm-charts
+              git status
+              git config --global user.email pipeline@demo.com
+              git config --global user.name "Pipeline"
+              git checkout -b main
+              # Check if the source file exists
+              if [ -f mlops-windoutput-helm/helm/packages/preprocessing-service-3.0.1.tgz ]; then
+                  echo "File found. Copying to the target directory..."
+                  mkdir -p helm-charts/preprocessing
+                  cp mlops-windoutput-helm/helm/packages/preprocessing-service-3.0.1.tgz helm-charts/preprocessing/
+                  echo "File successfully copied to helm-charts/preprocessing/"
+              else
+                  echo "File preprocessing-service-3.0.1.tgz not found in mlops-windoutput-helm/helm/packages/"
+                  exit 1
+              fi
+              git add -A
+              git commit -m "Add latest preprocessing file"
+              echo "Pushing changes to the main branch..."
+              git push -u origin main
+            displayName: Create, Commit, and Push
+
+
+
