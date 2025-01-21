@@ -86,8 +86,8 @@ stages:
       - job: create_helm_pkg
         displayName: Package helm charts and artifact.
         steps:
-          # - checkout: HelmCharts
-          #   persistCredentials: true
+          - checkout: HelmCharts
+            persistCredentials: true
 
           - checkout: self
             displayName: Checking out complete Repo
