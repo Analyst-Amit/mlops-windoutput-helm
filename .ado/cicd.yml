@@ -164,7 +164,7 @@ stages:
 
           - script: |
               echo "Listing the files in $(Pipeline.Workspace)/helm-chart"
-              ls -R $(Pipeline.Workspace)/helm-chart  # List all files in the directory to debug the artifact location
+              # ls -R $(Pipeline.Workspace)/helm-chart/helm-chart-artifact  # List all files in the directory to debug the artifact location
 
               cd helm-charts
               git status
@@ -173,10 +173,10 @@ stages:
               git checkout main || git checkout -b main
               
               # Check if the artifact file exists
-              if [ -f "$(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz" ]; then
+              if [ -f "$(Pipeline.Workspace)/helm-chart/helm-chart-artifact/preprocessing-service-3.0.1.tgz" ]; then
                   echo "File found. Copying to the target directory..."
                   mkdir -p preprocessing  # Create the 'preprocessing' directory
-                  cp "$(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz" preprocessing/
+                  cp "$(Pipeline.Workspace)/helm-chart/helm-chart-artifact/preprocessing-service-3.0.1.tgz" preprocessing/
                   echo "File successfully copied"
               else
                   echo "File preprocessing-service-3.0.1.tgz not found in artifact"
