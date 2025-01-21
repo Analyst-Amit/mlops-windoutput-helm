@@ -80,14 +80,14 @@ stages:
   #             tags: |
   #               latest
   #               $(Build.SourceBranchName)
-  - stage: PushFileToAnotherRepo
-    displayName: Push File to Another GitHub Repository
+  - stage: PackageHelmChart
+    displayName: Versioning of Helm Charts
     jobs:
       - job: create_helm_pkg
-        displayName: Push File Job
+        displayName: Package helm charts and artifact.
         steps:
-          - checkout: HelmCharts
-            persistCredentials: true
+          # - checkout: HelmCharts
+          #   persistCredentials: true
 
           - checkout: self
             displayName: Checking out complete Repo
@@ -108,38 +108,79 @@ stages:
               echo "Helm chart packaged successfully in 'mlops-windoutput-helm/helm/packages'"
             displayName: "Updated and Packaged ${{ parameters.directoryPath }} Helm Chart"
 
-          - script: |
-              # Verify the packaged files
-              echo "Contents of 'packages' directory:"
-              ls -la mlops-windoutput-helm/helm/packages
-              echo "Contents of 'helm' directory:"
-              ls -la mlops-windoutput-helm/helm
-              ls -la
-              echo "Contents of main directory"
-            displayName: "List Packaged Files"
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: mlops-windoutput-helm/helm/packages
+              artifactName: helm-chart-artifact
+              publishLocation: Container
+
+          # - script: |
+          #     # Verify the packaged files
+          #     echo "Contents of 'packages' directory:"
+          #     ls -la mlops-windoutput-helm/helm/packages
+          #     echo "Contents of 'helm' directory:"
+          #     ls -la mlops-windoutput-helm/helm
+          #     ls -la
+          #     echo "Contents of main directory"
+          #   displayName: "List Packaged Files"
 
 
+          # - script: |
+          #     cd helm-charts
+          #     git status
+          #     git config --global user.email pipeline@demo.com
+          #     git config --global user.name "Pipeline"
+          #     git checkout -b main
+          #     # Check if the source file exists
+          #     if [ -f mlops-windoutput-helm/helm/packages/preprocessing-service-3.0.1.tgz ]; then
+          #         echo "File found. Copying to the target directory..."
+          #         mkdir -p helm-charts/preprocessing
+          #         cp mlops-windoutput-helm/helm/packages/preprocessing-service-3.0.1.tgz helm-charts/preprocessing/
+          #         echo "File successfully copied to helm-charts/preprocessing/"
+          #     else
+          #         echo "File preprocessing-service-3.0.1.tgz not found in mlops-windoutput-helm/helm/packages/"
+          #         exit 1
+          #     fi
+          #     git add -A
+          #     git commit -m "Add latest preprocessing file"
+          #     echo "Pushing changes to the main branch..."
+          #     git push -u origin main
+          #   displayName: Create, Commit, and Push
+  - stage: PushFileToAnotherRepo
+    jobs:
+      - job: push_file
+        steps:
+          - checkout: HelmCharts
+            persistCredentials: true
+          - checkout: self
+            displayName: Checking out complete Repo
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'specific'
+              artifactName: 'helm-chart-artifact'
+              downloadPath: '$(Pipeline.Workspace)/helm-chart'
           - script: |
               cd helm-charts
               git status
               git config --global user.email pipeline@demo.com
               git config --global user.name "Pipeline"
-              git checkout -b main
-              # Check if the source file exists
-              if [ -f mlops-windoutput-helm/helm/packages/preprocessing-service-3.0.1.tgz ]; then
+              git checkout main || git checkout -b main
+              # Check if the artifact file exists
+              if [ -f $(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz ]; then
                   echo "File found. Copying to the target directory..."
-                  mkdir -p helm-charts/preprocessing
-                  cp mlops-windoutput-helm/helm/packages/preprocessing-service-3.0.1.tgz helm-charts/preprocessing/
-                  echo "File successfully copied to helm-charts/preprocessing/"
+                  mkdir -p preprocessing  # Create the 'preprocessing' directory
+                  cp $(Pipeline.Workspace)/helm-chart/preprocessing-service-3.0.1.tgz preprocessing/
+                  echo "File successfully copied"
               else
-                  echo "File preprocessing-service-3.0.1.tgz not found in mlops-windoutput-helm/helm/packages/"
+                  echo "File preprocessing-service-3.0.1.tgz not found in artifact"
                   exit 1
               fi
               git add -A
               git commit -m "Add latest preprocessing file"
-              echo "Pushing changes to the main branch..."
               git push -u origin main
             displayName: Create, Commit, and Push
+
 
 
 
