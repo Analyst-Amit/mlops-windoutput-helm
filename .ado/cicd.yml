@@ -83,27 +83,40 @@ stages:
   - stage: PushFileToAnotherRepo
     displayName: Push File to Another GitHub Repository
     jobs:
-      - job: push_file
+      - job: create_helm_pkg
         displayName: Push File Job
         steps:
           - checkout: HelmCharts
             persistCredentials: true
-          - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
-            displayName: Print DOCKER_USERNAME
+
           - checkout: self
             displayName: Checking out complete Repo
-          - script: ls -la 
-            displayName: List Files in the Whole directory
-          - script: ls -la mlops-windoutput-helm/helm
-            displayName: List file in just the preprocessing-service
-          - script: |
-              yq eval '.version = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
-              yq eval '.appVersion = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
-              echo "Updated version fields in Chart.yaml"
 
-          - script: cat mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
-            displayName: Print Chart.yaml to Verify Updates
-              
+          - script: |
+              yq eval '.version = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/Chart.yaml
+              yq eval '.appVersion = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/Chart.yaml
+              cat mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/Chart.yaml
+            displayName: "Updated ${{ parameters.directoryPath }} Chart.yaml"
+
+          - task: HelmInstaller@1
+            displayName: Helm installer
+            inputs: 
+              helmVersionToInstall: 3.16.3
+          
+          - script: |
+              helm package mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service --destination mlops-windoutput-helm/helm/packages
+              echo "Helm chart packaged successfully in 'mlops-windoutput-helm/helm/packages'"
+            displayName: "Updated and Packaged ${{ parameters.directoryPath }} Helm Chart"
+
+          - script: |
+              # Verify the packaged files
+              echo "Contents of 'packages' directory:"
+              ls -la mlops-windoutput-helm/helm/packages
+              echo "Contents of 'helm' directory:"
+              ls -la mlops-windoutput-helm/helm
+            displayName: "List Packaged Files"
+
+
           # - script: |
           #     git config --global user.email pipeline@demo.com & git config --global user.name "Pipeline"
           #     echo "Adding and committing the file..."
@@ -114,3 +127,10 @@ stages:
           #     echo "Pushing changes to the main branch..."
           #     git push -u origin main
           #   displayName: Create, Commit, and Push
+          - script: |
+              yq eval '.version = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
+              yq eval '.appVersion = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
+              echo "Updated version fields in Chart.yaml"
+
+          - script: cat mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
+            displayName: Print Chart.yaml to Verify Updates
