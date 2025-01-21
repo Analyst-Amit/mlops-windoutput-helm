@@ -92,7 +92,7 @@ stages:
             displayName: List Files in the Whole directory
           - script: ls -la mlops-windoutput-helm/helm
             displayName: List file in just the preprocessing-service
-           - script: |
+          - script: |
               yq eval '.version = "3.0.0"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
               yq eval '.appVersion = "3.0.0"' -i mlops-windoutput-helm/helm/preprocessing-service/Chart.yaml
               echo "Updated version fields in Chart.yaml"
