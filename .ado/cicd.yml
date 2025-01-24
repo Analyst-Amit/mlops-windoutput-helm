@@ -59,30 +59,30 @@ stages:
   #             echo "Validation successful: Directory '$DIR_PATH' is present."
   #           displayName: Validate Parameterized Directory
 
-  # - stage: push_pre_processing_image
-  #   displayName: Deploy to Production
-  #   jobs:
-  #     - job: docker_build_and_push_prod
-  #       displayName: Build Docker Image and Push to Docker Hub
-  #       steps:
-  #         - checkout: self
-  #         - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
-  #           displayName: Print DOCKER_USERNAME
-  #         - script: ls -la ${{ parameters.directoryPath }}
-  #           displayName: List Files in the Directory
-  #         - task: Docker@2
-  #           displayName: Build and Push Docker Image
-  #           inputs:
-  #             containerRegistry: docker-hub-connection
-  #             repository: $(DOCKER_USERNAME)/preprocessing
-  #             command: buildAndPush
-  #             Dockerfile: ${{ parameters.directoryPath }}/Dockerfile
-  #             tags: |
-  #               latest
-  #               $(Build.SourceBranchName)
+  - stage: push_pre_processing_image
+    displayName: Deploy to Production
+    jobs:
+      - job: docker_build_and_push_prod
+        displayName: Build Docker Image and Push to Docker Hub
+        steps:
+          - checkout: self
+          - script: echo "DOCKER_USERNAME is- $(DOCKER_USERNAME)"
+            displayName: Print DOCKER_USERNAME
+          - script: ls -la ${{ parameters.directoryPath }}
+            displayName: List Files in the Directory
+          - task: Docker@2
+            displayName: Build and Push Docker Image
+            inputs:
+              containerRegistry: docker-hub-connection
+              repository: $(DOCKER_USERNAME)/preprocessing
+              command: buildAndPush
+              Dockerfile: ${{ parameters.directoryPath }}/Dockerfile
+              tags: |
+                latest
+                ${{ parameters.version }}
+#                $(Build.SourceBranchName)
 
   - stage: PackageHelmChart
-    displayName: Versioning of Helm Charts
     jobs:
       - job: create_helm_pkg
         displayName: Package helm charts and artifact.
@@ -98,6 +98,12 @@ stages:
               yq eval '.appVersion = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/Chart.yaml
               cat mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/Chart.yaml
             displayName: "Updated ${{ parameters.directoryPath }} Chart.yaml"
+
+          - script: |
+              yq eval '.image.repository = "amitgupta2533/${{ parameters.directoryPath }}"' -i mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/values.yaml
+              yq eval '.image.tag = "${{ parameters.version }}"' -i mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/values.yaml
+              cat mlops-windoutput-helm/helm/${{ parameters.directoryPath }}-service/values.yaml
+            displayName: "Updated ${{ parameters.directoryPath }} values.yaml"
 
           - task: HelmInstaller@1
             displayName: Helm installer
@@ -115,7 +121,7 @@ stages:
               artifactName: helm-chart-artifact
               publishLocation: Container
 
-  - stage: PushFileToAnotherRepo
+  - stage: PushFileToChartsRepo
     jobs:
       - job: push_file
         steps:
