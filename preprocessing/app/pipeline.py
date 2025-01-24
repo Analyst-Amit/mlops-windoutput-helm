@@ -24,8 +24,8 @@ def sanitize_input(data: List[Dict[str, float]]) -> List[Dict[str, float]]:
     df = pd.DataFrame(data)
     print(df.head())
     # Ensure the date_time column is parsed and added to the DataFrame
-    # df["date_time"] = pd.to_datetime(df["date_time"], format="%d %m %Y %H:%M")
-    df["date_time"] = pd.to_datetime(df["date_time"], format="%Y-%m-%dT%H:%M")
+    df["date_time"] = pd.to_datetime(df["date_time"], format="%d %m %Y %H:%M")
+  
 
     # Extract Month and Hour from the Date/Time
     df["month"] = df["date_time"].dt.month.astype(float)
