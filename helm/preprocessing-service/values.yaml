@@ -1,8 +1,8 @@
 replicaCount: 3
 
 image:
-  repository: amitgupta2533/preprocessing-service
-  tag: v0.0.1
+  repository: amitgupta2533/preprocessing
+  tag: latest
   pullPolicy: Always
 
 service:

@@ -6,9 +6,9 @@ trigger:
       - feature/*
       - bugfix/*
   # Disable automatic path-based trigger as this will be parameterized
-  paths:
-    include:
-      - preprocessing
+  # paths:
+  #   include:
+  #     - preprocessing
 
 pool:
   vmImage: 'ubuntu-latest' # Define the build agent
@@ -59,10 +59,9 @@ stages:
   #             echo "Validation successful: Directory '$DIR_PATH' is present."
   #           displayName: Validate Parameterized Directory
 
-  - stage: push_pre_processing_image
-    displayName: Deploy to Production
+  - stage: building_${{ parameters.directoryPath }}_image
     jobs:
-      - job: docker_build_and_push_prod
+      - job: build_and_tag_image
         displayName: Build Docker Image and Push to Docker Hub
         steps:
           - checkout: self
