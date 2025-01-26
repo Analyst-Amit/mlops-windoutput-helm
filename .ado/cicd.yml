@@ -174,7 +174,7 @@ stages:
             inputs:
             # Kubernetes Cluster
               connectionType: 'Kubernetes Service Connection' # 'Azure Resource Manager' | 'Kubernetes Service Connection' | 'None'. Required when command != logout && command != package && command != save. Connection Type. Default: Azure Resource Manager.
-              kubernetesServiceConnection: azure-pipeline-sa
+              kubernetesServiceConnection: azure-pipeline
               namespace: env-qa
             # Commands
               command: 'ls' # 'create' | 'delete' | 'expose' | 'get' | 'init' | 'install' | 'login' | 'logout' | 'ls' | 'package' | 'rollback' | 'save' | 'upgrade' | 'uninstall'. Required. Command. Default: ls.
