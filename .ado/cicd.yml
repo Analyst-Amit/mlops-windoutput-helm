@@ -164,7 +164,7 @@ stages:
 #               git push -u origin main
 #             displayName: Create, Commit, and Push
   
-  - stage: CD_deploy_qa
+  - stage: DeploymentQA
     jobs:
       - job: deploy-qa
         steps:          
