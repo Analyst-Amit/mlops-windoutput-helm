@@ -164,9 +164,9 @@ stages:
 #               git push -u origin main
 #             displayName: Create, Commit, and Push
   
-  - stage: DeploymentQA
+  - stage: deployment_QA
     jobs:
-      - job: deploy-qa
+      - job: deploy_qa
         steps:          
           # Package and deploy Helm charts v0
           # Deploy, configure, update a Kubernetes cluster in Azure Container Service by running helm commands.
