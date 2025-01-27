@@ -172,6 +172,11 @@ stages:
           - checkout: HelmCharts # Or use `HelmCharts` if it's an external repository
             persistCredentials: true
 
+          - script: |
+              echo "Checking for Helm chart files..."
+              ls helm-charts/preprocessing/
+          displayName: "Verify Helm Chart Files"
+
           # Deploy with Helm
           - task: HelmDeploy@1
             displayName: Deploy Preprocessing Service with Helm
