@@ -168,26 +168,28 @@ stages:
     jobs:
       - job: deploy_qa
         steps:
+          # Install Helm
+          - task: HelmInstaller@1
+            displayName: Install Helm
+            inputs:
+              helmVersionToInstall: 3.16.3
+
+          # Deploy with Helm
           - task: HelmDeploy@1
+            displayName: Deploy Preprocessing Service with Helm
             inputs:
               # Kubernetes Cluster Configuration
-              connectionType: 'Kubernetes Service Connection' # 'Kubernetes Service Connection' is chosen for direct Kubernetes connection.
-              kubernetesServiceConnection: azure-pipeline-sa # Service connection to authenticate with Kubernetes.
+              connectionType: 'Kubernetes Service Connection' # Connect to Kubernetes.
+              kubernetesServiceConnection: azure-pipeline-sa # Service connection for authentication.
               namespace: env-qa # Target namespace for deployment.
 
               # Helm Command and Chart Details
-              command: 'upgrade' # Upgrade the existing release or install it if not present.
-              chartType: 'Name' # Using the chart name format instead of a local file path.
-              chartName: 'preprocessing/preprocessing-service' # The Helm chart to deploy.
-              chartVersion: '3.0.5' # Chart version for deployment.
-              releaseName: 'preprocessing-service' # Helm release name for the deployment.
+              command: 'upgrade' # Upgrade the release or install if not found.
+              chartType: FilePath # Use the local chart from your GitHub repository.
+              chartPath: 'preprocessing/' # The path to the directory containing your `index.yaml` and chart files.
+              releaseName: 'preprocessing-service' # The Helm release name for this deployment.
+              overrideValues: '' # Add any override values if necessary.
 
-              # # Advanced Options (Optional)
-              # overrideValues: '-f values-qa.yaml' # Override specific values if needed.
-              # waitForExecution: true # Wait for the Helm command execution to complete.
-              install: true # Install the chart if the release doesn't exist.
-              # recreate: false # Avoid recreating pods unless explicitly required.
-              # force: false # Force upgrade if necessary.
 
 
 
