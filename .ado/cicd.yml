@@ -168,27 +168,25 @@ stages:
     jobs:
       - job: deploy_qa
         steps:
-          - task: HelmDeploy@1
+          - task: Kubernetes@1
             inputs:
               # Kubernetes Cluster Configuration
               connectionType: 'Kubernetes Service Connection' # 'Kubernetes Service Connection' is chosen for direct Kubernetes connection.
               kubernetesServiceConnection: azure-pipeline-sa # Service connection to authenticate with Kubernetes.
               namespace: env-qa # Target namespace for deployment.
 
-              # Helm Command and Chart Details
-              command: 'upgrade' # Upgrade the existing release or install it if not present.
-              chartType: 'Name' # Using the chart name format instead of a local file path.
-              chartName: '${{ parameters.directoryPath }}/${{ parameters.directoryPath }}-service' # The Helm chart to deploy.
-              chartVersion: ${{ parameters.version }} # Chart version for deployment.
-              releaseName: '${{ parameters.directoryPath }}-service' # Helm release name for the deployment.
-
-              # # Advanced Options (Optional)
-              # overrideValues: '-f values-qa.yaml' # Override specific values if needed.
-              # waitForExecution: true # Wait for the Helm command execution to complete.
-              install: true # Install the chart if the release doesn't exist.
-              # recreate: false # Avoid recreating pods unless explicitly required.
-              # force: false # Force upgrade if necessary.
-
+          # Install Helm
+          - task: HelmInstaller@1
+            displayName: Install Helm
+            inputs:
+              helmVersionToInstall: 3.16.3
+          
+          # Add and update the Helm chart repository
+          - script: |
+              helm list
+              helm repo list
+            displayName: List helm repository
+            
 
 
 
