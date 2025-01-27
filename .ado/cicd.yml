@@ -44,7 +44,7 @@ resources:
     endpoint: ado-terraform-token
     name: Analyst-Amit/helm-charts
 
-# stages:
+stages:
 #   - stage: Validator
 #     displayName: Validate Build Prerequisites
 #     jobs:
