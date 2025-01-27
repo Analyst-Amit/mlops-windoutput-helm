@@ -23,10 +23,19 @@ parameters:
     displayName: Directory Path
     type: string
     default: "preprocessing"  # Default value if none is provided
+
   - name: version
     displayName: Update Version to
     type: string
     default: "1.0.0"  # Default value if none is provided
+
+  - name: rollbackVersion
+    type: string
+    default: ''
+
+  - name: isRollback
+    type: boolean
+    default: false
 
 resources:
   repositories:
@@ -35,29 +44,29 @@ resources:
     endpoint: ado-terraform-token
     name: Analyst-Amit/helm-charts
 
-stages:
-  # - stage: Validator
-  #   displayName: Validate Build Prerequisites
-  #   jobs:
-  #     - job: validate_files_and_directories
-  #       displayName: Validate Required Files and Directories
-  #       steps:
-  #         - checkout: self
-  #         - script: |
-  #             # Parameterized directory path
-  #             DIR_PATH="${{ parameters.directoryPath }}"
+# stages:
+#   - stage: Validator
+#     displayName: Validate Build Prerequisites
+#     jobs:
+#       - job: validate_files_and_directories
+#         displayName: Validate Required Files and Directories
+#         steps:
+#           - checkout: self
+#           - script: |
+#               # Parameterized directory path
+#               DIR_PATH="${{ parameters.directoryPath }}"
 
-  #             echo "Validating directory: $DIR_PATH"
+#               echo "Validating directory: $DIR_PATH"
 
-  #             # Check if the directory exists
-  #             if [ ! -d "$DIR_PATH" ]; then
-  #               echo "Error: Directory '$DIR_PATH' is missing!" && exit 1
-  #             else
-  #               echo "Directory '$DIR_PATH' is present."
-  #             fi
+#               # Check if the directory exists
+#               if [ ! -d "$DIR_PATH" ]; then
+#                 echo "Error: Directory '$DIR_PATH' is missing!" && exit 1
+#               else
+#                 echo "Directory '$DIR_PATH' is present."
+#               fi
 
-  #             echo "Validation successful: Directory '$DIR_PATH' is present."
-  #           displayName: Validate Parameterized Directory
+#               echo "Validation successful: Directory '$DIR_PATH' is present."
+#             displayName: Validate Parameterized Directory
 
 #   - stage: building_${{ parameters.directoryPath }}_image
 #     jobs:
@@ -173,6 +182,16 @@ stages:
             persistCredentials: true
 
           - script: |
+              if [ "${{ parameters.isRollback }}" == "true" ]; then
+                echo "Rollback flag is set. Rolling back to version ${{ parameters.rollbackVersion }}."
+                helm rollback preprocessing-service ${{ parameters.rollbackVersion }} -n env-qa
+                exit 0
+              else
+                echo "Deploying new version to QA."
+              fi
+            displayName: "Check for Rollback Condition"
+
+          - script: |
               echo "Checking for Helm chart files..."
               ls preprocessing
             displayName: "Verify Helm Chart Files"
@@ -192,6 +211,7 @@ stages:
               chartPath: 'preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
               releaseName: 'preprocessing-service' # Helm release name for deployment.
               install: true # Allows installation if the release is not found.
+              enabled: ${{ parameters.isRollback }} == 'false'
 
 
 
