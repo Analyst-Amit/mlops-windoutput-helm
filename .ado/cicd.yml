@@ -188,7 +188,7 @@ stages:
 
           # Deploy with Helm
           - task: HelmDeploy@1
-            displayName: Deploy Preprocessing Service with Helm
+            displayName: Rollback
             inputs:
               # Kubernetes Cluster Configuration
               connectionType: 'Kubernetes Service Connection' # Connect to Kubernetes.
@@ -197,12 +197,24 @@ stages:
 
               # Helm Command and Chart Details
               command: 'rollback' # Upgrade the release or install if not found.
-              # chartType: filepath  # Use the local chart from your GitHub repository.
-              # chartPath: 'preprocessing/preprocessing-service-3.0.4.tgz' # Path to the chart file.
-              releaseName: 'preprocessing-service' # Helm release name for deployment.
-              install: false # Allows installation if the release is not found.
               arguments: 'preprocessing-service'
             condition: eq('${{ parameters.isRollback }}', true)
+
+          # Deploy with Helm
+          - task: HelmDeploy@1
+            displayName: Deploy Preprocessing Service with Helm
+            inputs:
+              # Kubernetes Cluster Configuration
+              connectionType: 'Kubernetes Service Connection' # Connect to Kubernetes.
+              kubernetesServiceConnection: azure-pipeline-sa # Service connection for authentication.
+              namespace: env-qa # Target namespace for deployment.
+
+              # Helm Command and Chart Details
+              command: 'upgrade' # Upgrade the release or install if not found.
+              chartType: filepath  # Use the local chart from your GitHub repository.
+              chartPath: 'preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
+              releaseName: 'preprocessing-service' # Helm release name for deployment.
+              install: true # Allows installation if the release is not found.
 
 
 
