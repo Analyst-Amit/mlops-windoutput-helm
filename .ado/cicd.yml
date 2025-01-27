@@ -29,13 +29,17 @@ parameters:
     type: string
     default: "1.0.0"  # Default value if none is provided
 
-  - name: rollbackVersion
-    type: string
-    default: ''
-
   - name: isRollback
     type: boolean
     default: false
+
+  - name: rollbackVersion
+    type: string
+    default: ''  # If no rollback version is provided, it will be empty
+    displayName: Rollback Version
+    condition: eq(${ { parameters.isRollback } }, true)
+
+  
 
 resources:
   repositories:
