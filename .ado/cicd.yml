@@ -196,11 +196,12 @@ stages:
               namespace: env-qa # Target namespace for deployment.
 
               # Helm Command and Chart Details
-              command: 'rollback preprocessing-service' # Upgrade the release or install if not found.
+              command: 'rollback' # Upgrade the release or install if not found.
               # chartType: filepath  # Use the local chart from your GitHub repository.
               # chartPath: 'preprocessing/preprocessing-service-3.0.4.tgz' # Path to the chart file.
               releaseName: 'preprocessing-service' # Helm release name for deployment.
               install: false # Allows installation if the release is not found.
+              arguments: 'preprocessing-service'
             condition: eq('${{ parameters.isRollback }}', true)
 
 
