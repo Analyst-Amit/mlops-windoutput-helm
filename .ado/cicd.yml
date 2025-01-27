@@ -172,7 +172,7 @@ stages:
             inputs:
               # Kubernetes Cluster Configuration
               connectionType: 'Kubernetes Service Connection' # 'Kubernetes Service Connection' is chosen for direct Kubernetes connection.
-              kubernetesServiceConnection: azure-pipeline-sa # Service connection to authenticate with Kubernetes.
+              kubernetesServiceEndpoint: azure-pipeline-sa # Service connection to authenticate with Kubernetes.
               namespace: env-qa # Target namespace for deployment.
 
           # Install Helm
