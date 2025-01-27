@@ -191,7 +191,7 @@ stages:
               # Helm Command and Chart Details
               command: 'upgrade' # Upgrade the release or install if not found.
               chartType: ChartName  # Use the local chart from your GitHub repository.
-              chartName: 'preprocessing-service' # The path to the directory containing your `index.yaml` and chart files.
+              chartName: 'helm-charts/preprocessing' # The path to the directory containing your `index.yaml` and chart files.
               releaseName: 'preprocessing-service' # The Helm release name for this deployment.
               overrideValues: '' # Add any override values if necessary.
 
