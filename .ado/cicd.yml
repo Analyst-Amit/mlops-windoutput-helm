@@ -168,8 +168,9 @@ stages:
     jobs:
       - job: deploy_qa
         steps:
-          checkout: HelmCharts
-          persistCredentials: true
+          # Checkout code from the repository
+          - checkout: HelmCharts # Or use `HelmCharts` if it's an external repository
+            persistCredentials: true
 
           # Deploy with Helm
           - task: HelmDeploy@1
@@ -183,9 +184,10 @@ stages:
               # Helm Command and Chart Details
               command: 'upgrade' # Upgrade the release or install if not found.
               chartType: filepath  # Use the local chart from your GitHub repository.
-              chartPath: 'helm-charts/preprocessing/preprocessing-service-3.0.5.tgz' # The path to the directory containing your `index.yaml` and chart files.
-              releaseName: 'preprocessing-service' # The Helm release name for this deployment.
-              install: true # Add any override values if necessary.
+              chartPath: 'helm-charts/preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
+              releaseName: 'preprocessing-service' # Helm release name for deployment.
+              install: true # Allows installation if the release is not found.
+
 
 
 
