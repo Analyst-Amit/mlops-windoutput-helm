@@ -177,13 +177,13 @@ stages:
               kubernetesServiceConnection: azure-pipeline-sa
               namespace: env-qa
             # Commands
-              command: 'upgrade' # 'create' | 'delete' | 'expose' | 'get' | 'init' | 'install' | 'login' | 'logout' | 'ls' | 'package' | 'rollback' | 'save' | 'upgrade' | 'uninstall'. Required. Command. Default: ls.
-              chartType: 'Name' # 'Name' | 'FilePath'. Required when command == install || command == upgrade. Chart Type. Default: Name.
+              command: 'repo list' # 'create' | 'delete' | 'expose' | 'get' | 'init' | 'install' | 'login' | 'logout' | 'ls' | 'package' | 'rollback' | 'save' | 'upgrade' | 'uninstall'. Required. Command. Default: ls.
+            #   chartType: 'Name' # 'Name' | 'FilePath'. Required when command == install || command == upgrade. Chart Type. Default: Name.
 
-            # Chart and Release Info
-              chartName: '${{ parameters.directoryPath }}/${{ parameters.directoryPath }}-service' # Full chart name (repository/chart).
-              chartVersion: ${{ parameters.version }} # Version of the chart to use.
-              releaseName: '${{ parameters.directoryPath }}-service' # Helm release name.
+            # # Chart and Release Info
+            #   chartName: '${{ parameters.directoryPath }}/${{ parameters.directoryPath }}-service' # Full chart name (repository/chart).
+            #   chartVersion: ${{ parameters.version }} # Version of the chart to use.
+            #   releaseName: '${{ parameters.directoryPath }}-service' # Helm release name.
 
 
 
