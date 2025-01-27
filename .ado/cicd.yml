@@ -168,8 +168,8 @@ stages:
     jobs:
       - job: deploy_qa
         steps:
-          - script: |
-              # git clone https://github.com/Analyst-Amit/helm-charts.git
+          checkout: HelmCharts
+          persistCredentials: true
 
           # Deploy with Helm
           - task: HelmDeploy@1
