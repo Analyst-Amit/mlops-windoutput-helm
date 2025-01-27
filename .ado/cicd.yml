@@ -183,7 +183,7 @@ stages:
 
           - script: |
               echo "Checking for Helm chart files..."
-              ls preprocessing
+              ls ${{ parameters.directoryPath }}
             displayName: "Verify Helm Chart Files"
 
           # Deploy with Helm
@@ -197,12 +197,12 @@ stages:
 
               # Helm Command and Chart Details
               command: 'rollback' # Upgrade the release or install if not found.
-              arguments: 'preprocessing-service'
+              arguments: '${{ parameters.directoryPath }}-service'
             condition: eq('${{ parameters.isRollback }}', true)
 
           # Deploy with Helm
           - task: HelmDeploy@1
-            displayName: Deploy Preprocessing Service with Helm
+            displayName: Deploy ${{ parameters.directoryPath }} Service with Helm
             inputs:
               # Kubernetes Cluster Configuration
               connectionType: 'Kubernetes Service Connection' # Connect to Kubernetes.
@@ -212,8 +212,8 @@ stages:
               # Helm Command and Chart Details
               command: 'upgrade' # Upgrade the release or install if not found.
               chartType: filepath  # Use the local chart from your GitHub repository.
-              chartPath: 'preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
-              releaseName: 'preprocessing-service' # Helm release name for deployment.
+              chartPath: '${{ parameters.directoryPath }}/${{ parameters.directoryPath }}-service-${{ parameters.version }}.tgz' # Path to the chart file.
+              releaseName: '${{ parameters.directoryPath }}-service' # Helm release name for deployment.
               install: true # Allows installation if the release is not found.
             condition: eq('${{ parameters.isRollback }}', false)
 
