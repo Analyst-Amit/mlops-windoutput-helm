@@ -200,7 +200,6 @@ stages:
               # chartType: filepath  # Use the local chart from your GitHub repository.
               # chartPath: 'preprocessing/preprocessing-service-3.0.4.tgz' # Path to the chart file.
               releaseName: 'preprocessing-service' # Helm release name for deployment.
-              revision: ${{ parameters.rollbackVersion }}
               install: false # Allows installation if the release is not found.
             condition: eq('${{ parameters.isRollback }}', true)
 
