@@ -37,7 +37,6 @@ parameters:
     type: string
     default: ''  # If no rollback version is provided, it will be empty
     displayName: Rollback Version
-    condition: eq(${ { parameters.isRollback } }, true)
 
   
 
