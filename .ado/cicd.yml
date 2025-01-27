@@ -182,16 +182,6 @@ stages:
             persistCredentials: true
 
           - script: |
-              if [ "${{ parameters.isRollback }}" == "true" ]; then
-                echo "Rollback flag is set. Rolling back to version ${{ parameters.rollbackVersion }}."
-                helm rollback preprocessing-service ${{ parameters.rollbackVersion }} -n env-qa
-                exit 0
-              else
-                echo "Deploying new version to QA."
-              fi
-            displayName: "Check for Rollback Condition"
-
-          - script: |
               echo "Checking for Helm chart files..."
               ls preprocessing
             displayName: "Verify Helm Chart Files"
@@ -206,12 +196,12 @@ stages:
               namespace: env-qa # Target namespace for deployment.
 
               # Helm Command and Chart Details
-              command: 'upgrade' # Upgrade the release or install if not found.
+              command: 'rollback' # Upgrade the release or install if not found.
               chartType: filepath  # Use the local chart from your GitHub repository.
-              chartPath: 'preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
+              chartPath: 'preprocessing/preprocessing-service-3.0.4.tgz' # Path to the chart file.
               releaseName: 'preprocessing-service' # Helm release name for deployment.
               install: true # Allows installation if the release is not found.
-              condition: and(succeeded(), eq('${{ parameters.isRollback }}', false))
+              condition: eq('${{ parameters.isRollback }}', true)
 
 
 
