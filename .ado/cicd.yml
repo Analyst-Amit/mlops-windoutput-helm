@@ -168,16 +168,18 @@ stages:
     jobs:
       - job: deploy_qa
         steps:
-          # Install Helm
-          - task: HelmInstaller@1
-            displayName: Install Helm
-            inputs:
-              helmVersionToInstall: 3.16.3
-          # Add Helm repository and update
+          # # Install Helm
+          # - task: HelmInstaller@1
+          #   displayName: Install Helm
+          #   inputs:
+          #     helmVersionToInstall: 3.16.3
+          # # Add Helm repository and update
+          # - script: |
+          #     helm repo add preprocessing-repo https://raw.githubusercontent.com/Analyst-Amit/helm-charts/main/preprocessing
+          #     helm repo update
+          #   displayName: Add Helm Repository
           - script: |
-              helm repo add preprocessing-repo https://raw.githubusercontent.com/Analyst-Amit/helm-charts/main/preprocessing
-              helm repo update
-            displayName: Add Helm Repository
+              git clone https://github.com/Analyst-Amit/helm-charts.git
 
           # Deploy with Helm
           - task: HelmDeploy@1
@@ -190,10 +192,11 @@ stages:
 
               # Helm Command and Chart Details
               command: 'upgrade' # Upgrade the release or install if not found.
-              chartType: ChartName  # Use the local chart from your GitHub repository.
-              chartName: 'helm-charts/preprocessing' # The path to the directory containing your `index.yaml` and chart files.
+              chartType: 'Name'  # Use the local chart from your GitHub repository.
+              chartName: 'preprocessing' # The path to the directory containing your `index.yaml` and chart files.
+              chartVersion: '3.0.4'
               releaseName: 'preprocessing-service' # The Helm release name for this deployment.
-              overrideValues: '' # Add any override values if necessary.
+              install: true # Add any override values if necessary.
 
 
 
