@@ -202,7 +202,7 @@ stages:
               releaseName: 'preprocessing-service' # Helm release name for deployment.
               install: false # Allows installation if the release is not found.
               revision: ${{ parameters.rollbackVersion }}
-            # condition: eq('${{ parameters.isRollback }}', true)
+            condition: eq('${{ parameters.isRollback }}', true)
 
 
 
