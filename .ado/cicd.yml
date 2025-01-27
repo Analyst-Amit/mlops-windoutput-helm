@@ -215,6 +215,7 @@ stages:
               chartPath: 'preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
               releaseName: 'preprocessing-service' # Helm release name for deployment.
               install: true # Allows installation if the release is not found.
+            condition: eq('${{ parameters.isRollback }}', false)
 
 
 
