@@ -199,9 +199,11 @@ stages:
               command: 'rollback' # Upgrade the release or install if not found.
               chartType: filepath  # Use the local chart from your GitHub repository.
               chartPath: 'preprocessing/preprocessing-service-3.0.4.tgz' # Path to the chart file.
+              revision: ${{ parameters.rollbackVersion }}
               releaseName: 'preprocessing-service' # Helm release name for deployment.
-              install: true # Allows installation if the release is not found.
-              condition: eq('${{ parameters.isRollback }}', true)
+              install: false # Allows installation if the release is not found.
+              revision: ${{ parameters.rollbackVersion }}
+            condition: eq('${{ parameters.isRollback }}', true)
 
 
 
