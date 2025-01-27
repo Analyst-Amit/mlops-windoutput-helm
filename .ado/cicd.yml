@@ -174,7 +174,7 @@ stages:
 
           - script: |
               echo "Checking for Helm chart files..."
-              ls
+              ls preprocessing
             displayName: "Verify Helm Chart Files"
 
           # Deploy with Helm
@@ -189,7 +189,7 @@ stages:
               # Helm Command and Chart Details
               command: 'upgrade' # Upgrade the release or install if not found.
               chartType: filepath  # Use the local chart from your GitHub repository.
-              chartPath: 'helm-charts/preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
+              chartPath: 'preprocessing/preprocessing-service-3.0.5.tgz' # Path to the chart file.
               releaseName: 'preprocessing-service' # Helm release name for deployment.
               install: true # Allows installation if the release is not found.
 
