@@ -174,7 +174,7 @@ stages:
 
           - script: |
               echo "Checking for Helm chart files..."
-              ls helm-charts/preprocessing/
+              ls
             displayName: "Verify Helm Chart Files"
 
           # Deploy with Helm
